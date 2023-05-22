@@ -25,6 +25,19 @@ public class PdfConversionMain {
 		String system = "TCBBMNB_WEB";
 		String fileNum = "66"; // 檔案數
 		String codeNum = "595"; // 程式碼總⾏數
+		System.out.println("args.length:"+args.length);
+		if(args.length>0){
+			System.out.println("使用cmd 參數執行");
+			for (int i = 0; i < args.length; i++) {
+				System.out.println("arg"+args[i]);
+				day = args[0];
+				system = args[1];
+				fileNum = args[2]; 
+				codeNum = args[3]; 
+			}
+		}else {
+			System.out.println("使用java 程式設定執行");
+		}
 		String random=getRandom();	//隨機數
 		String dayChinese = day.substring(0, 4) + "年"
 				+ String.valueOf(Integer.parseInt(day.substring(5, 7)) < 10 ? day.substring(6, 7) : day.substring(5, 7))
@@ -82,6 +95,7 @@ public class PdfConversionMain {
 		canvas1.setTextMatrix(x1, y1);
 		String day = "2023年7月27日";
 		String text1 = "檢測日期:" + day + "，檢測主機名稱:SC-Fority-02，檢測專案代號";
+        System.out.println("after:======="+map.get("text1"));
 		canvas1.showText(map.get("text1"));
 		canvas1.endText();
 
@@ -99,6 +113,7 @@ public class PdfConversionMain {
 		canvas2.beginText();
 		canvas2.setFontAndSize(font2.getBaseFont(), 10);
 		canvas2.setTextMatrix(x2, y2);
+        System.out.println("after:======="+map.get("text2"));
 		canvas2.showText(map.get("text2"));
 		canvas2.endText();
 
@@ -116,6 +131,7 @@ public class PdfConversionMain {
 		canvas3.beginText();
 		canvas3.setFontAndSize(font2.getBaseFont(), 10);
 		canvas3.setTextMatrix(x3, y3);
+        System.out.println("after:======="+map.get("text3"));
 		canvas3.showText(map.get("text3"));
 		canvas3.endText();
 

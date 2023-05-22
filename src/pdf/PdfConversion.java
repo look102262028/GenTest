@@ -45,7 +45,7 @@ public class PdfConversion {
                             com.itextpdf.awt.geom.Rectangle2D.Float boundingRectange = textRenderInfo
                                     .getBaseline().getBoundingRectange();
                             resu = new float[3];
-                            System.out.println("======="+text);
+//                            System.out.println("before:======="+text);
                             resu[0] = boundingRectange.x;
                             resu[1] = boundingRectange.y;
                             resu[2] = i;
