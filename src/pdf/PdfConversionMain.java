@@ -14,17 +14,21 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
-
+//   D:\workspace\Mobile\GenTest
 public class PdfConversionMain {
 
 	public static String inputFile = "D:\\workspace\\Mobile\\GenTest\\test.pdf";
+	public static String inputFile1 = "D:\\workspace\\Mobile\\GenTest\\test_samerow.pdf";
 	public static String outputFile = "D:\\workspace\\Mobile\\GenTest\\";
 
 	public static void main(String[] args) throws IOException, DocumentException {
-		String day = "2023/05/19";
+		String day = "2023/7/10";
 		String system = "TCBBMNB_WEB";
-		String fileNum = "66"; // 檔案數
-		String codeNum = "595"; // 程式碼總⾏數
+		String fileNum = "3801"; // 檔案數
+		String codeNum = "98263"; // 程式碼總⾏數
+		String sameROW = "2"; //同一行 1相同,2:不同
+		String random=getRandom();	//隨機數
+		random="999958777";
 		System.out.println("args.length:"+args.length);
 		if(args.length>0){
 			System.out.println("使用cmd 參數執行");
@@ -38,10 +42,7 @@ public class PdfConversionMain {
 		}else {
 			System.out.println("使用java 程式設定執行");
 		}
-		String random=getRandom();	//隨機數
-		String dayChinese = day.substring(0, 4) + "年"
-				+ String.valueOf(Integer.parseInt(day.substring(5, 7)) < 10 ? day.substring(6, 7) : day.substring(5, 7))
-				+ "月" + day.substring(8) + "日";
+		String dayChinese = getChineseDay(day); //08月 or 8月
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("day", day);
 		map.put("text1", "檢測日期：" + dayChinese + "，檢測主機名稱:SC-Fority-02，檢測專案代號");
@@ -50,9 +51,18 @@ public class PdfConversionMain {
 		outputFile=outputFile+"Fortify_"+random+"_"+system+".pdf";
 		File file = new File(outputFile);
 		file.getParentFile().mkdirs();
-		new PdfConversionMain().manipulatePdf(inputFile, outputFile, map);
+		if(!"1".equals(sameROW)) {	//兩行
+			new PdfConversionMain().manipulatePdf(inputFile, outputFile, map);
+		}else {	//BuildID一行
+			String text1_1="檢測日期：" + dayChinese + "，檢測主機名稱:SC-Fority，檢測專案代號" + map.get("text2");
+			String text2_1=map.get("text3");
+			map.put("text1_1", text1_1 );
+			map.put("text2_1", text2_1 );
+			new PdfConversionMain().manipulatePdfSameRow(inputFile1, outputFile, map);
+		}
 	}
 
+	//不同行
 	public void manipulatePdf(String src, String dest, Map<String, String> map) throws IOException, DocumentException {
 		PdfReader reader = new PdfReader(src);
 		PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(dest));
@@ -87,16 +97,14 @@ public class PdfConversionMain {
 		y1 = result1[1];
 		canvas1.saveState();
 		canvas1.setColorFill(BaseColor.WHITE);
-		canvas1.rectangle(x1, y1 - 2, 500, 13);
+		canvas1.rectangle(x1, y1 - 2, 500, 13);	
 		canvas1.fill();
 		canvas1.restoreState();
 		canvas1.beginText();
 		canvas1.setFontAndSize(font2.getBaseFont(), 10);
 		canvas1.setTextMatrix(x1, y1);
-		String day = "2023年7月27日";
-		String text1 = "檢測日期:" + day + "，檢測主機名稱:SC-Fority-02，檢測專案代號";
         System.out.println("after:======="+map.get("text1"));
-		canvas1.showText(map.get("text1"));
+		canvas1.showText(map.get("text1")); 
 		canvas1.endText();
 
 		// 2.(BuildID):Fortify_698049700_TCBBMNB_WEB
@@ -107,7 +115,7 @@ public class PdfConversionMain {
 		y2 = result2[1];
 		canvas2.saveState();
 		canvas2.setColorFill(BaseColor.WHITE);
-		canvas2.rectangle(x2, y2 - 2, 500, 13);
+		canvas2.rectangle(x2, y2 - 2, 500, 13);	
 		canvas2.fill();
 		canvas2.restoreState();
 		canvas2.beginText();
@@ -152,7 +160,7 @@ public class PdfConversionMain {
 		String text4 = "測試結果:";
 		String text5 = "共找到 0 個問題";
 		canvas4.showText(text4);
-		canvas3.setTextMatrix(x4 + 10, y4 - 14);
+		canvas4.setTextMatrix(x4 + 10, y4 - 14);
 		canvas4.showText(text5);
 		canvas4.endText();
 
@@ -160,7 +168,104 @@ public class PdfConversionMain {
 		reader.close();
 		System.out.println("complete");
 	}
-
+	
+	
+	
+	//同一行
+	public void manipulatePdfSameRow(String src, String dest, Map<String, String> map) throws IOException, DocumentException {
+		PdfReader reader = new PdfReader(src);
+		PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(dest));
+		// 0.日期
+		float[] result = PdfConversion.getKeyWords(src, "2023/5/15");
+		PdfContentByte canvas = stamper.getOverContent((int) result[2]);
+		float x, y;
+		x = result[0];
+		y = result[1];
+		canvas.saveState();
+		canvas.setColorFill(BaseColor.WHITE);
+		canvas.rectangle(x, y - 2, 60, 20);
+		canvas.fill();
+		canvas.restoreState();
+		canvas.beginText();
+		BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+		Font font = new Font(bf, 10, Font.BOLD);
+		canvas.setFontAndSize(font.getBaseFont(), 11);
+		canvas.setTextMatrix(x, y);
+		canvas.showText(map.get("day"));
+		canvas.endText();
+		BaseFont bf2 = BaseFont.createFont("C:\\Windows\\Fonts\\ARIALUNI.TTF", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+		Font font2 = new Font(bf2, 10, Font.BOLD);
+		// 1.檢測日期：2023年5月15日，檢測主機名稱：SC-Fortify，檢測專案代號 (BuildID)：Fortify_109558700_TCBBMNB_WEB
+		float[] result2 = PdfConversion.getKeyWords(src, "SC-Fortify");
+		PdfContentByte canvas2 = stamper.getOverContent((int) result2[2]);
+		float x2, y2;
+		x2 = result2[0];
+		y2 = result2[1];
+		canvas2.saveState();
+		canvas2.setColorFill(BaseColor.WHITE);
+		canvas2.rectangle(x2, y2 - 2, 530, 13);	
+		canvas2.fill();
+		canvas2.restoreState();
+		canvas2.beginText();
+		canvas2.setFontAndSize(font2.getBaseFont(), 10);
+		canvas2.setTextMatrix(x2, y2);
+        System.out.println("after:======="+map.get("text1_1"));
+		canvas2.showText(map.get("text1_1"));
+		canvas2.endText();
+		// 2.檢測總檔案數：2，程式碼總行數：436
+		float[] result3 = PdfConversion.getKeyWords(src, "：2");
+		PdfContentByte canvas3 = stamper.getOverContent((int) result3[2]);
+		float x3, y3;
+		x3 = result3[0];
+		y3 = result3[1];
+		canvas3.saveState();
+		canvas3.setColorFill(BaseColor.WHITE);
+		canvas3.rectangle(x3, y3 - 2, 500, 13);
+		canvas3.fill();
+		canvas3.restoreState();
+		canvas3.beginText();
+		canvas3.setFontAndSize(font2.getBaseFont(), 10);
+		canvas3.setTextMatrix(x3, y3);
+        System.out.println("after:======="+map.get("text3"));
+		canvas3.showText(map.get("text2_1"));
+		canvas3.endText();
+		// 3.測試結果: , 共找到 0 個問題
+		float[] result4 = PdfConversion.getKeyWords(src, "測試結果");
+		PdfContentByte canvas4 = stamper.getOverContent((int) result4[2]);
+		float x4, y4;
+		x4 = result4[0];
+		y4 = result4[1];
+		canvas4.saveState();
+		canvas4.setColorFill(BaseColor.WHITE);
+		canvas4.rectangle(x4, y4 - 20, 500, 33);//
+		canvas4.fill();
+		canvas4.restoreState();
+		canvas4.beginText();
+		canvas4.setFontAndSize(font2.getBaseFont(), 10);
+		canvas4.setTextMatrix(x4 + 10, y4);
+		String text4 = "測試結果:";
+		String text5 = "共找到 0 個問題";
+		canvas4.showText(text4);
+		canvas4.setTextMatrix(x4 + 10, y4 - 14);
+		canvas4.showText(text5);
+		canvas4.endText();
+		stamper.close();
+		reader.close();
+		System.out.println("complete");
+	}
+	public static String getChineseDay(String day) {
+		String dayChinese=day;
+		if(day.length()==10) {	//月份有0
+			dayChinese = day.substring(0, 4) + "年"
+					+ day.substring(5, 7)
+					+ "月" + day.substring(8) + "日";
+		}else {	//月份無0
+			dayChinese = day.substring(0, 4) + "年"
+					+ day.substring(5, 6)
+					+ "月" + day.substring(7) + "日";
+		}
+		return dayChinese;
+	}
 	public static String getRandom() {
 		Random random = new Random();
 		int randomNumber = random.nextInt(9000000) + 1000000; // 生成7位数范围内的随机数
