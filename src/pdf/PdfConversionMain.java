@@ -17,11 +17,15 @@ import com.itextpdf.text.pdf.PdfStamper;
 //   D:\workspace\Mobile\GenTest
 public class PdfConversionMain {
 
-	public static String inputFile = "D:\\workspace\\Mobile\\GenTest\\test.pdf";
-	public static String inputFile1 = "D:\\workspace\\Mobile\\GenTest\\test_samerow.pdf";
-	public static String outputFile = "D:\\workspace\\Mobile\\GenTest\\";
-
+	
+	static String basePath=System.getProperty("user.dir")+File.separator;
+	public static String inputFile = basePath+"test.pdf";	//D:\\workspace\\Mobile\\GenTest\\test.pdf
+	public static String inputFile1 = basePath+"test_samerow.pdf";	//D:\\workspace\\Mobile\\GenTest\\test_samerow.pdf
+	public static String outputFile = basePath;				//D:\\workspace\\Mobile\\GenTest\\
+	public static String fontPath = basePath+"lib"+File.separator+"ARIALUNI.TTF";	//lib\ARIALUNI.TTF
+	
 	public static void main(String[] args) throws IOException, DocumentException {
+		System.out.println("fon"+fontPath);
 		String day = "2023/7/10";
 		String system = "TCBBMNB_WEB";
 		String fileNum = "3801"; // 檔案數
@@ -86,8 +90,8 @@ public class PdfConversionMain {
 		canvas.setTextMatrix(x, y);
 		canvas.showText(map.get("day"));
 		canvas.endText();
-		//Arial Unicode.ttf
-		BaseFont bf2 = BaseFont.createFont("C:\\Windows\\Fonts\\ARIALUNI.TTF", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+		//Arial Unicode.ttf C:\\Windows\\Fonts\\ARIALUNI.TTF
+		BaseFont bf2 = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 		Font font2 = new Font(bf2, 10, Font.BOLD);
 		// 1.檢測日期:2023年4月25日，檢測主機名稱:SC-Fority-02，檢測專案代號
 		float[] result1 = PdfConversion.getKeyWords(src, "SC-Fority");
@@ -193,7 +197,7 @@ public class PdfConversionMain {
 		canvas.setTextMatrix(x, y);
 		canvas.showText(map.get("day"));
 		canvas.endText();
-		BaseFont bf2 = BaseFont.createFont("C:\\Windows\\Fonts\\ARIALUNI.TTF", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+		BaseFont bf2 = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 		Font font2 = new Font(bf2, 10, Font.BOLD);
 		// 1.檢測日期：2023年5月15日，檢測主機名稱：SC-Fortify，檢測專案代號 (BuildID)：Fortify_109558700_TCBBMNB_WEB
 		float[] result2 = PdfConversion.getKeyWords(src, "SC-Fortify");
