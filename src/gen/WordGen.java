@@ -1,5 +1,7 @@
 package gen;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,19 +22,20 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-
+//D:\workspace\Mobile\GenTest
 public class WordGen {
 
 	static Map map = new HashMap();
 	static String basePath = "D:\\workspace\\Mobile\\GenTest\\";
 
 	public static void main(String[] args) throws Exception {
-		String system="MOBILE";
-		String jobNum="99999";
-		String createday="1120510";
-		String subject="請填寫需求內容";
-		String testPeopleA="賴偉智1";
-		String testPeopleB="賴偉智2";
+		//ONLINE_SERVICE / MOBILE_BANK_APP  TCBBMNB_WEB 
+		String system="ONLINE_SERVICE";
+		String jobNum="58265";
+		String createday="1130115";
+		String subject="修改線上申請平台信用卡申請欄位";
+		String testPeopleA="黃偉誠";
+		String testPeopleB="戴尚斈";
 		if(args.length>0){
 			System.out.println("使用cmd 參數執行");
 			for (int i = 0; i < args.length; i++) {
@@ -59,8 +62,21 @@ public class WordGen {
 		createExcel("2");
 		createWord("1");	//1:QA
 		createWord("2");	//2:(單元測試作業單乙)
+		openFolder(basePath);
 	}
-
+	public static void openFolder(String path) {
+		Desktop desktop =Desktop.getDesktop();
+		File folder =new File(path);
+		if(folder.exists()) {
+			try {
+				desktop.open(folder);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else {
+			System.out.println("folder not exist");
+		}
+	}
 	public static void createExcel(String type) {
 
 		String system = (String) map.get("system");
@@ -135,7 +151,7 @@ public class WordGen {
 		String testPeopleA = (String) map.get("testPeopleA"); // 指定測試人1
 		String testPeopleB = (String) map.get("testPeopleB"); // 指定測試人2
 
-		String output1 = basePath+"(QA) MOBILE_單元測試作業單JOB-0000000";
+		String output1 = basePath+"(QA)單元測試作業單JOB-0000000";
 		String output2 = basePath+"單元測試作業單(乙)JOB-0000000";
 		String outputpath = "1".equals(type) ? output1 + jobNum + ".docx" : output2 + jobNum + ".docx";
 		System.out.println("start");
@@ -175,7 +191,7 @@ public class WordGen {
 										run.setText(text, 0);
 									} else if (text.contains("nnn")) { // 系統別中文
 										p.setAlignment(ParagraphAlignment.LEFT);
-										text = text.replace("nnn", system.equals("MOBILE") ? "行動網銀" : "網路銀行");
+										text = text.replace("nnn", system.equals("ONLINE_SERVICE") ? "網路銀行" : "行動網銀");
 										run.setFontSize(12);
 										run.setText(text, 0);
 									} else if (text.contains("99999")) { // 工作單號

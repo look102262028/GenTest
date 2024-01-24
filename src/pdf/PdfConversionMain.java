@@ -26,13 +26,13 @@ public class PdfConversionMain {
 	
 	public static void main(String[] args) throws IOException, DocumentException {
 		System.out.println("fon"+fontPath);
-		String day = "2023/7/10";
-		String system = "TCBBMNB_WEB";
-		String fileNum = "3801"; // 檔案數
-		String codeNum = "98263"; // 程式碼總⾏數
-		String sameROW = "2"; //同一行 1相同,2:不同
+		String day = "2023/11/28";
+		String system = "Mobile";
+		String fileNum = "1"; // 檔案數
+		String codeNum = "27722"; // 程式碼總⾏數
+		String sameROW = "312"; //同一行 1相同,2:不同
 		String random=getRandom();	//隨機數
-		random="999958777";
+//		random="698289300";
 		System.out.println("args.length:"+args.length);
 		if(args.length>0){
 			System.out.println("使用cmd 參數執行");

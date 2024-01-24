@@ -1,5 +1,6 @@
 package pdf;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,14 +26,14 @@ public class fortifyConversionMain {
 	public static String fontPath = basePath+"lib"+File.separator+"ARIALUNI.TTF";	//lib\ARIALUNI.TTF
 	
 	public static void main(String[] args) throws IOException, DocumentException {
-		System.out.println("fon"+fontPath);
-		String day = "2023/11/30";
-		String system = "ONLINE_SERVICE";
-		String fileNum = "23"; // 檔案數
-		String codeNum = "456"; // 程式碼總⾏數
-		String sameROW = "1"; //同一行 1相同,2:不同
+		//ONLINE_SERVICE  MOBILE_BANK_APP  TCBBMNB_WEB web_resource
+		String day = "2024/1/23";
+		String system = "TCB.PRIVATE.SERVICE.WEB.20240123";
+		String fileNum = "8"; // 檔案數
+		String codeNum = "1132"; // 程式碼總⾏數
+		String sameROW = "2"; //同一行 1相同,2:不同
 		String random=getRandom();	//隨機數
-		random="123129900";
+		random="218492900";
 		System.out.println("args.length:"+args.length);
 		if(args.length>0){
 			System.out.println("使用cmd 參數執行");
@@ -49,7 +50,7 @@ public class fortifyConversionMain {
 		String dayChinese = getChineseDay(day); //08月 or 8月
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("day", day);
-		map.put("text1", "檢測日期：" + dayChinese + "，檢測主機名稱:SC-Fority-02，檢測專案代號");
+		map.put("text1", "檢測日期：" + dayChinese + "，檢測主機名稱:SC-Fority，檢測專案代號");
 		map.put("text2", "(BuildID)：Fortify_" + random + "_" + system);
 		map.put("text3", "檢測總檔案數：" + fileNum + "，程式碼總⾏數：" + codeNum);
 		outputFile=outputFile+"Fortify_"+random+"_"+system+".pdf";
@@ -64,6 +65,8 @@ public class fortifyConversionMain {
 			map.put("text2_1", text2_1 );
 			new fortifyConversionMain().manipulatePdfSameRow(inputFile1, outputFile, map);
 		}
+
+		openFolder("D:\\workspace\\Mobile\\GenTest");
 	}
 
 	//不同行
@@ -71,7 +74,7 @@ public class fortifyConversionMain {
 		PdfReader reader = new PdfReader(src);
 		PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(dest));
 		// 1.日期
-		float[] result = PdfConversion.getKeyWords(src, "2023/11/29");
+		float[] result = PdfConversion.getKeyWords(src, "2024/1/24");
 		PdfContentByte canvas = stamper.getOverContent((int) result[2]);
 		float x, y;
 		x = result[0];
@@ -113,7 +116,7 @@ public class fortifyConversionMain {
 		canvas1.endText();
 
 		// 2.(BuildID):Fortify_698049700_TCBBMNB_WEB
-		float[] result2 = PdfConversion.getKeyWords(src, "Fortify_30247");
+		float[] result2 = PdfConversion.getKeyWords(src, "Fortify_96190");
 		PdfContentByte canvas2 = stamper.getOverContent((int) result2[2]);
 		float x2, y2;
 		x2 = result2[0];
@@ -131,7 +134,7 @@ public class fortifyConversionMain {
 		canvas2.endText();
 
 		// 3.檢測總檔案數:534程，式程碼式總碼行總數:4619369
-		float[] result3 = PdfConversion.getKeyWords(src, "：22");
+		float[] result3 = PdfConversion.getKeyWords(src, "：11");
 		PdfContentByte canvas3 = stamper.getOverContent((int) result3[2]);
 		float x3, y3;
 		x3 = result3[0];
@@ -258,6 +261,19 @@ public class fortifyConversionMain {
 		reader.close();
 		System.out.println("complete");
 	}
+	public static void openFolder(String path) {
+		Desktop desktop =Desktop.getDesktop();
+		File folder =new File(path);
+		if(folder.exists()) {
+			try {
+				desktop.open(folder);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else {
+			System.out.println("folder not exist");
+		}
+	}
 	public static String getChineseDay(String day) {
 		String dayChinese=day;
 		if(day.length()==10) {	//月份有0
@@ -276,5 +292,6 @@ public class fortifyConversionMain {
 		int randomNumber = random.nextInt(9000000) + 1000000; // 生成7位数范围内的随机数
 		return String.valueOf(randomNumber+"00");
 	}
-
+	
+	
 }
